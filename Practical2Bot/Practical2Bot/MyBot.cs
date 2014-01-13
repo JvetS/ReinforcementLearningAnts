@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using YourBot;
 using System.Runtime.Serialization.Formatters.Binary;
-//GIT
+
 namespace Ants
 {
 
@@ -41,7 +41,7 @@ namespace Ants
             }
             catch
             {
-                Learner = new QLearner(0.9f, 0.8f, 0.9f);
+                Learner = new QLearner(0.9f,0.8f,0.9f);
             }
             Globals.state = state;
             Globals.random = new Random(state.PlayerSeed);

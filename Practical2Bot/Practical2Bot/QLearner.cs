@@ -31,7 +31,7 @@ namespace YourBot
             //TO DO: hashcode van QState implementeren
             if (Nodes.ContainsKey(state))
             {
-                HandleExistingNode(state, realState);
+                HandleExistingNode(state, realState);   
             }
             else
             {
@@ -43,7 +43,7 @@ namespace YourBot
         {
             QNode current = Nodes[state];
 
-
+            
             if (PreviousAction.Item2 == null)
             {
                 PreviousAction.Item2 = current;
@@ -96,7 +96,7 @@ namespace YourBot
         public List<Pair<QAction, QNode>> Actions { get; private set; }
 
         //Q(s,a) s is de QState, de lijst bevat de actions (a) gekoppeld aan de QNode waar de action je heen brengt
-        public QNode(QState state, List<Pair<QAction, QNode>> actions)
+        public QNode(QState state, List<Pair<QAction,QNode>> actions)
         {
             State = state;
             Actions = actions;
@@ -110,7 +110,7 @@ namespace YourBot
         public float MaxQValue()
         {
             float maxQ = int.MinValue;
-            foreach (Pair<QAction, QNode> action in Actions)
+            foreach (Pair<QAction,QNode> action in Actions)
             {
                 if (action.Item1.QValue > maxQ)
                     maxQ = action.Item1.QValue;
@@ -119,10 +119,10 @@ namespace YourBot
             return maxQ;
         }
 
-        public Pair<QAction, QNode> BestAction()
+        public Pair<QAction,QNode> BestAction()
         {
             float maxQ = int.MinValue;
-            Pair<QAction, QNode> maxAction = null;
+            Pair<QAction,QNode> maxAction = null;
             foreach (Pair<QAction, QNode> action in Actions)
             {
                 if (action.Item1.QValue > maxQ)
