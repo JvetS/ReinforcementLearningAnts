@@ -29,6 +29,24 @@ namespace YourBot
             }
         }
 
+		public override int GetHashCode()
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (Location l in MyAnts)
+				sb.AppendFormat("{0}", l.GetHashCode());
+
+			foreach (Location l in Food)
+				sb.AppendFormat("{0}", l.GetHashCode());
+
+			foreach (Location l in EnemyAnts)
+				sb.AppendFormat("{0}", l.GetHashCode());
+
+			sb.AppendFormat("{0}", visibleTiles);
+			sb.AppendFormat("{0}", visitedTiles);
+
+			return sb.ToString().GetHashCode();
+		}
+
         public List<Location> CopyList(List<Location> original)
         {
             List<Location> result = new List<Location>(original.Count);
