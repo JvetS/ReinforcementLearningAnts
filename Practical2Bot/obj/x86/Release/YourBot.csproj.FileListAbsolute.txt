@@ -1,0 +1,4 @@
+D:\C#Projects\edu.3861171.KI\b2ki\b2ki\your bot\bin\Release\MyBot.exe
+D:\C#Projects\edu.3861171.KI\b2ki\b2ki\your bot\bin\Release\MyBot.pdb
+D:\C#Projects\edu.3861171.KI\b2ki\b2ki\your bot\obj\x86\Release\MyBot.exe
+D:\C#Projects\edu.3861171.KI\b2ki\b2ki\your bot\obj\x86\Release\MyBot.pdb
