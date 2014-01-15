@@ -285,6 +285,9 @@ namespace Ants {
 					int square = r * r + c * c;
 					if (square < this.ViewRadius2)
 					{
+                        Location wrap = this.WrapCoordinates(new Location(r, c));
+                        r = wrap.Row;
+                        c = wrap.Col;
 						offsets.Add(map[r, c]);
 					}
 				}

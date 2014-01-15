@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using YourBot;
 
 namespace Ants
 {
@@ -9,5 +10,6 @@ namespace Ants
     {
         public static GameState state;
         public static Random random;
+        public static Pathfinder pathFinder;
     }
 }

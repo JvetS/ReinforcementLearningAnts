@@ -63,6 +63,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\AllExplore.cs" />
     <Compile Include="AntData.cs" />
     <Compile Include="Ants.cs" />
     <Compile Include="Bot.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="IGameState.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="MinHeap.cs" />
+    <Compile Include="Actions\MoveAllToFood.cs" />
     <Compile Include="MyBot.cs" />
     <Compile Include="Pathfinder.cs" />
     <Compile Include="QAction.cs" />

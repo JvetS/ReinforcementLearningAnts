@@ -14,14 +14,16 @@ namespace YourBot
         private Pair<QAction, QNode> PreviousAction;
         private QNode PreviousNode;
         private Dictionary<QState, QNode> Nodes;
+        private Random Random;
 
         //exploration moet tussen 1 en 0
-        public QLearner(float alpha, float gamma, float exploration)
+        public QLearner(float alpha, float gamma, float exploration, int seed)
         {
             Nodes = new Dictionary<QState, QNode>();
             Gamma = gamma;
             Alpha = alpha;
             ExplorationChance = exploration;
+            Random = new Random(seed);
         }
 
         public void LearnPolicy(GameState realState)
@@ -35,7 +37,9 @@ namespace YourBot
             }
             else
             {
-                //TO DO: QNode initialiseren met actions en state
+                QNode newNode = InitialiseNewNode(state, realState);
+                Nodes.Add(state, newNode);
+                HandleExistingNode(state, realState);
             }
         }
 
@@ -43,19 +47,16 @@ namespace YourBot
         {
             QNode current = Nodes[state];
 
-
-            if (PreviousAction.Item2 == null)
+            if (PreviousAction != null && PreviousNode!= null && PreviousAction.Item2 == null)
             {
                 PreviousAction.Item2 = current;
             }
 
             List<Pair<QAction, QNode>> actions = current.Actions;
 
-            Random random = new Random();
-
-            if (random.NextDouble() < ExplorationChance)
+            if (Random.NextDouble() < ExplorationChance)
             {
-                Pair<QAction, QNode> chosenAction = actions[random.Next(0, 4)];
+                Pair<QAction, QNode> chosenAction = actions[Random.Next(0, 4)];
 
                 if (chosenAction.Item2 != null)
                 {
@@ -64,25 +65,40 @@ namespace YourBot
                     chosenAction.Item1.QValue = (1 - Alpha) * chosenAction.Item1.QValue + Alpha * (reward + maxQ);//Q(s,a) = (1-a) * Q(s,a) + a(r+g max[Q(s', a')]
                 }
 
-                chosenAction.Item1.DoAction(realState);
+                chosenAction.Item1.DoAction(realState, current.State);
                 PreviousAction = chosenAction;
             }
             else
             {
                 Pair<QAction, QNode> chosenAction = current.BestAction();
-                chosenAction.Item1.DoAction(realState);
+                chosenAction.Item1.DoAction(realState, current.State);
                 PreviousAction = chosenAction;
             }
 
             PreviousNode = current;
         }
 
-        private void InitialiseNewNode(QState state, GameState realState)
+        private QNode InitialiseNewNode(QState state, GameState realState)
         {
             //to do, actions aan node toevoegen
-            QNode newNode = new QNode(state, null);
+            List<Pair<QAction, QNode>> actions = new List<Pair<QAction, QNode>>();
 
-            throw new NotImplementedException();
+            QAction foodAction = new MoveAllToFood();
+            if (foodAction.Apllicable(realState))
+            {
+                actions.Add(new Pair<QAction, QNode>(foodAction, null));
+            }
+
+            QAction exploreAction = new AllExplore();
+            if (exploreAction.Apllicable(realState))
+            {
+                actions.Add(new Pair<QAction, QNode>(exploreAction, null));
+            }
+
+
+            QNode newNode = new QNode(state, actions);
+
+            return newNode;
         }
 
 
@@ -92,7 +108,7 @@ namespace YourBot
     [Serializable()]
     class QNode
     {
-        QState State;
+        public QState State { get; private set; }
         public List<Pair<QAction, QNode>> Actions { get; private set; }
 
         //Q(s,a) s is de QState, de lijst bevat de actions (a) gekoppeld aan de QNode waar de action je heen brengt

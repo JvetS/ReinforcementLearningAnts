@@ -20,10 +20,17 @@ namespace Ants
 
         public override void DoTurn(GameState state)
         {
-            Learner.LearnPolicy(state);
+            try
+            {
+                Learner.LearnPolicy(state);
+            }
+            catch
+            {
+                int i = 0;
+            }
         }
 
-        public void LastTurn(GameState state)
+        public void LastTurn(GameState state, bool won)
         {
             //TO DO laatse beurt afhandelen
             BinaryFormatter formatter = new BinaryFormatter();
@@ -33,6 +40,10 @@ namespace Ants
 
         public override void Initialise(GameState state)
         {
+            Globals.state = state;
+            Globals.random = new Random(state.PlayerSeed);
+            Globals.pathFinder = new Pathfinder(state.Width, state.Height);
+
             try
             {
                 BinaryFormatter formatter = new BinaryFormatter();
@@ -41,10 +52,8 @@ namespace Ants
             }
             catch
             {
-                Learner = new QLearner(0.9f, 0.8f, 0.9f);
+                Learner = new QLearner(0.9f, 0.8f, 0.9f, state.PlayerSeed);
             }
-            Globals.state = state;
-            Globals.random = new Random(state.PlayerSeed);
         }
 
         public static void Main(string[] args)

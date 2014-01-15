@@ -7,7 +7,7 @@ using Ants;
 namespace YourBot
 {
     [Serializable()]
-    class QState
+    public class QState
     {
         List<Location> MyAnts;
         List<Location> Food, EnemyAnts;
@@ -15,18 +15,20 @@ namespace YourBot
 
         public QState(GameState state)
         {
-            CalculateReward(state);
             MyAnts = CopyList(state.MyAnts);
             Food = CopyList(state.FoodTiles);
             EnemyAnts = CopyList(state.EnemyAnts);
 
             foreach (Location l in state.map)
             {
+               
                 if (state.GetIsVisible(l))
                     visibleTiles++;
                 if (l.Visited)
                     visitedTiles++;
             }
+
+            CalculateReward(state);
         }
 
 		public override int GetHashCode()
@@ -62,8 +64,6 @@ namespace YourBot
 
         private void CalculateReward(GameState state)
         {
-            Pathfinder pathfinder = new Pathfinder(state.Width, state.Height);
-
             int result = 0;
             result += MyAnts.Count * 100;
             result += visibleTiles + visitedTiles;
@@ -81,7 +81,7 @@ namespace YourBot
 
                 foreach (Location ant in MyAnts)
                 {
-                    int distance = pathfinder.FindRoute(ant, food).GetDistance;
+                    int distance = Globals.pathFinder.FindRoute(ant, food).GetDistance;
 
                     if (distance < leastDistance)
                     {

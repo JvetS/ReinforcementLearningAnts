@@ -19,13 +19,13 @@ namespace YourBot
             ID = TotalAnts;
             CurrentLocation = loc;
         }
-        /*
+        
         /// <summary>
         /// method to mave ant along its path, only place where position of ant can be modified
         /// </summary>
-        /// <param name="bot"></param>
+        /// <param name="action"></param>
         /// <returns></returns>
-        public MoveType AdvancePath(MyBot bot)
+        public MoveType AdvancePath(QAction action)
         {
             Location target = this.AntRoute.GetNext;
 
@@ -40,22 +40,22 @@ namespace YourBot
             }
 
             //her starts line to get order to framework
-            MoveType move = bot.MoveForLocation(CurrentLocation, target);
+            MoveType move = action.MoveForLocation(CurrentLocation, target);
 
             //the move has been approved and forwarded to framwerk
             if (move == MoveType.Success)
             {
                 
-                bot.antLocations.Remove(CurrentLocation);
+                action.antLocations.Remove(CurrentLocation);
                 CurrentLocation = target;
-                bot.antLocations.Add(CurrentLocation, this);
+                action.antLocations.Add(CurrentLocation, this);
                 AntRoute.PathIndex++;
 
             }
 
             return move;
         }
-        */
+        
         public override int GetHashCode()
         {
             return ID.GetHashCode();
