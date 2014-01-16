@@ -30,7 +30,7 @@ namespace Ants
             }
         }
 
-        public void LastTurn(GameState state, bool won)
+        public override void LastTurn(GameState state, bool won)
         {
             //TO DO laatse beurt afhandelen
             BinaryFormatter formatter = new BinaryFormatter();

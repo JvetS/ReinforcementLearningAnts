@@ -23,15 +23,19 @@ namespace Ants {
 		private const string END = "end";
 		
 		private GameState state;
+        private bool LastState = false;
 
 
 		public void PlayGame(Bot bot) {
-
+            StreamWriter writer = new StreamWriter("botInput.txt",false);
 			List<string> input = new List<string>();
 			
 			try {
 				while (true) {
 					string line = System.Console.In.ReadLine().Trim().ToLower();
+                    writer.WriteLine(line);
+                    writer.Flush();
+
 					switch (line)
 					{
 					case READY:
@@ -41,14 +45,35 @@ namespace Ants {
 						input.Clear();
 						break;
 					case GO:
-						state.StartNewTurn();
-						ParseUpdate(input);
-						bot.DoTurn(state);
-						FinishTurn();
-						input.Clear();
+                        if (!LastState)
+                        {
+                            state.StartNewTurn();
+                            ParseUpdate(input);
+                            bot.DoTurn(state);
+                            FinishTurn();
+                            input.Clear();
+                        }
+                        else
+                        {
+                            string[] scores = input[1].Remove(0, 6).Split(); ;//de "scores<spatie>"er af slopen en dan splitten
+
+                            int myScore = int.Parse(scores[0]);//we gaan er vanuit de wij bot 1 zijn
+                            bool won = false;
+                            for (int i = 1; i < scores.GetLength(0); i++)
+                            {
+                                won = myScore > int.Parse(scores[i]);
+                            }
+
+                            input.RemoveRange(0, 4);//alle informatie voor de laatste state er af slopen
+
+                            ParseUpdate(input);
+
+                            bot.LastTurn(state, won);
+                        }
 						break;
 					case END:
-						break;
+                        LastState = true;
+                        break;
 					default:
 						input.Add(line);
 						break;
@@ -63,7 +88,8 @@ namespace Ants {
 					fs.Close();
 				#endif
 			}
-			
+
+            writer.Close();
 		}
 		
 		// parse initial input and setup starting game state
