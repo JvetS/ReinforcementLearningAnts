@@ -23,7 +23,7 @@ namespace Ants
 			foreach (Location enm in state.EnemyAnts)
 				Globals.enemyInfluence.AddInfluence(enm, 10.0f);
 
-			foreach (Location fnd in state.EnemyAnts)
+			foreach (Location enm in state.EnemyHills)
 				Globals.enemyInfluence.AddInfluence(enm, 10.0f);
 
 			foreach (Location fnd in state.MyAnts)
