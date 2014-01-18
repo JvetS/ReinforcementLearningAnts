@@ -29,64 +29,66 @@ namespace Ants {
 		public void PlayGame(Bot bot) {
             StreamWriter writer = new StreamWriter("botInput.txt",false);
 			List<string> input = new List<string>();
+            bool endParse = false;
 			
-			try {
-				while (true) {
-					string line = System.Console.In.ReadLine().Trim().ToLower();
-                    writer.WriteLine(line);
-                    writer.Flush();
+			
+			while (!endParse) {
+				string line = System.Console.In.ReadLine().Trim().ToLower();
+                writer.WriteLine(line);
+                writer.Flush();
 
-					switch (line)
-					{
-					case READY:
-						ParseSetup(input);
-                        bot.Initialise(state);
-						FinishTurn();
-						input.Clear();
-						break;
-					case GO:
-                        if (!LastState)
+				switch (line)
+				{
+				case READY:
+					ParseSetup(input);
+                    bot.Initialise(state);
+					FinishTurn();
+					input.Clear();
+					break;
+				case GO:
+                    if (!LastState)
+                    {
+                        state.StartNewTurn();
+                        ParseUpdate(input);
+                        bot.DoTurn(state);
+                        FinishTurn();
+                        input.Clear();
+                    }
+                    else
+                    {
+                        string[] scores = input[1].Remove(0, 6).Split(); ;//de "scores<spatie>"er af slopen en dan splitten
+
+                        int myScore = int.Parse(scores[0]);//we gaan er vanuit de wij bot 1 zijn
+                        bool won = false;
+                        for (int i = 1; i < scores.GetLength(0); i++)
                         {
-                            state.StartNewTurn();
-                            ParseUpdate(input);
-                            bot.DoTurn(state);
-                            FinishTurn();
-                            input.Clear();
+                            won = myScore > int.Parse(scores[i]) && won;
                         }
-                        else
-                        {
-                            string[] scores = input[1].Remove(0, 6).Split(); ;//de "scores<spatie>"er af slopen en dan splitten
 
-                            int myScore = int.Parse(scores[0]);//we gaan er vanuit de wij bot 1 zijn
-                            bool won = false;
-                            for (int i = 1; i < scores.GetLength(0); i++)
-                            {
-                                won = myScore > int.Parse(scores[i]);
-                            }
+                        input.RemoveRange(0, 4);//alle informatie voor de laatste state er af slopen
 
-                            input.RemoveRange(0, 4);//alle informatie voor de laatste state er af slopen
+                        ParseUpdate(input);
 
-                            ParseUpdate(input);
+                        bot.LastTurn(state, won);
 
-                            bot.LastTurn(state, won);
-                        }
-						break;
-					case END:
-                        LastState = true;
-                        break;
-					default:
-						input.Add(line);
-						break;
-					}
-				}
-			} catch (Exception e) {
-				#if DEBUG
-					FileStream fs = new FileStream("debug.log", System.IO.FileMode.Create, System.IO.FileAccess.Write);
-					StreamWriter sw = new StreamWriter(fs);
-					sw.WriteLine(e);
-					sw.Close();
-					fs.Close();
-				#endif
+                    }
+					break;
+				case END:
+                    LastState = true;
+                    break;
+				default:
+					input.Add(line);
+					break;
+					
+			    }
+            //catch (Exception e) {
+            //    #if DEBUG
+            //        FileStream fs = new FileStream("debug.log", System.IO.FileMode.Create, System.IO.FileAccess.Write);
+            //        StreamWriter sw = new StreamWriter(fs);
+            //        sw.WriteLine(e);
+            //        sw.Close();
+            //        fs.Close();
+            //    #endif
 			}
 
             writer.Close();

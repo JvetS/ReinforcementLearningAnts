@@ -6,6 +6,7 @@ using Ants;
 
 namespace YourBot
 {
+    [Serializable()]
     class AllExplore : QAction
     {
         public AllExplore()
@@ -26,11 +27,15 @@ namespace YourBot
 
             foreach (AntData ant in allAnts)
             {
-                Location lowerLeft = new Location(Globals.state.Height - 1, 0);
-                Location upperRight = new Location(0, Globals.state.Width - 1);
-                Location goal = SelectRandomLocation(lowerLeft, upperRight, random);
+                do
+                {
+                    Location lowerLeft = new Location(Globals.state.Height - 1, 0);
+                    Location upperRight = new Location(0, Globals.state.Width - 1);
+                    Location goal = SelectRandomLocation(lowerLeft, upperRight, random);
 
-                ant.AntRoute = Globals.pathFinder.FindRoute(ant.CurrentLocation, goal);
+                    ant.AntRoute = Globals.pathFinder.FindRoute(ant.CurrentLocation, goal);
+                } while (ant.AntRoute == null);
+
                 ant.AdvancePath(this);
             }
         }

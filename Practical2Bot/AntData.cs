@@ -5,6 +5,7 @@ namespace YourBot
 {
     public enum Role { None, Explore, Gather, Defend, Attack }
 
+    [Serializable()]
     public class AntData
     {
         private static int TotalAnts;//counter to automatically ensire unique ID per ant

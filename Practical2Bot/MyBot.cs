@@ -20,19 +20,14 @@ namespace Ants
 
         public override void DoTurn(GameState state)
         {
-            try
-            {
-                Learner.LearnPolicy(state);
-            }
-            catch
-            {
-                int i = 0;
-            }
+            Learner.LearnPolicy(state, false);
         }
 
         public override void LastTurn(GameState state, bool won)
         {
             //TO DO laatse beurt afhandelen
+            Learner.LearnPolicy(state, won);
+            Learner.PrepareForSerialisation();
             BinaryFormatter formatter = new BinaryFormatter();
             Stream learnerStream = new FileStream("QData.Q", FileMode.OpenOrCreate);
             formatter.Serialize(learnerStream, Learner);

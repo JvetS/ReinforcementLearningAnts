@@ -15,6 +15,7 @@ namespace YourBot
         private QNode PreviousNode;
         private Dictionary<QState, QNode> Nodes;
         private Random Random;
+        private int Seed;
 
         //exploration moet tussen 1 en 0
         public QLearner(float alpha, float gamma, float exploration, int seed)
@@ -24,9 +25,10 @@ namespace YourBot
             Alpha = alpha;
             ExplorationChance = exploration;
             Random = new Random(seed);
+            Seed = seed;
         }
 
-        public void LearnPolicy(GameState realState)
+        public void LearnPolicy(GameState realState, bool win)
         {
             QState state = new QState(realState);
 
@@ -37,10 +39,18 @@ namespace YourBot
             }
             else
             {
-                QNode newNode = InitialiseNewNode(state, realState);
+                QNode newNode = InitialiseNewNode(state, realState, win);
                 Nodes.Add(state, newNode);
                 HandleExistingNode(state, realState);
             }
+        }
+
+        //zorgt ervoor dat bij de volgende run alles weer klaar staat voor de eerste state
+        public void PrepareForSerialisation()
+        {
+            PreviousAction = null;
+            PreviousNode = null;
+            Random = new Random(Seed);//zodat random gedrag niet afhangt van hoeveel runs er gedaan zijn
         }
 
         private void HandleExistingNode(QState state, GameState realState)
@@ -56,7 +66,7 @@ namespace YourBot
 
             if (Random.NextDouble() < ExplorationChance)
             {
-                Pair<QAction, QNode> chosenAction = actions[Random.Next(0, 4)];
+                Pair<QAction, QNode> chosenAction = actions[Random.Next(0, actions.Count)];
 
                 if (chosenAction.Item2 != null)
                 {
@@ -78,7 +88,7 @@ namespace YourBot
             PreviousNode = current;
         }
 
-        private QNode InitialiseNewNode(QState state, GameState realState)
+        private QNode InitialiseNewNode(QState state, GameState realState, bool win)
         {
             //to do, actions aan node toevoegen
             List<Pair<QAction, QNode>> actions = new List<Pair<QAction, QNode>>();
@@ -96,7 +106,7 @@ namespace YourBot
             }
 
 
-            QNode newNode = new QNode(state, actions);
+            QNode newNode = new QNode(state, actions, win);
 
             return newNode;
         }
@@ -110,17 +120,23 @@ namespace YourBot
     {
         public QState State { get; private set; }
         public List<Pair<QAction, QNode>> Actions { get; private set; }
+        public bool Win;
 
         //Q(s,a) s is de QState, de lijst bevat de actions (a) gekoppeld aan de QNode waar de action je heen brengt
-        public QNode(QState state, List<Pair<QAction, QNode>> actions)
+        public QNode(QState state, List<Pair<QAction, QNode>> actions, bool win)
         {
             State = state;
             Actions = actions;
+            Win = win;
         }
 
         public float GetReward
         {
-            get { return State.GetReward; }
+            get { if (!Win) 
+                    return State.GetReward; 
+                  else 
+                    return int.MaxValue; 
+            }//misschien wat extreem;
         }
 
         public float MaxQValue()

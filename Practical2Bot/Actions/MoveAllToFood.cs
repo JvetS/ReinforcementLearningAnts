@@ -6,6 +6,7 @@ using Ants;
 
 namespace YourBot
 {
+    [Serializable()]
     class MoveAllToFood : QAction
     {
         public MoveAllToFood()
@@ -40,7 +41,7 @@ namespace YourBot
 
                 int assignedAnts = 0;
 
-                while (assignedAnts < antPerFood)
+                while (assignedAnts < antPerFood && antHeap.Count > 0)
                 {
                     AntData ant = antHeap.ExtractMin();
 
