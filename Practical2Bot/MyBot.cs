@@ -35,14 +35,7 @@ namespace Ants
 			Globals.enemyInfluence.UpdateInfluence();
 			Globals.friendlyInfluence.UpdateInfluence();
 
-            try
-            {
-                Learner.LearnPolicy(state);
-            }
-            catch
-            {
-                int i = 0;
-            }
+          
             Learner.LearnPolicy(state, false);
         }
 
