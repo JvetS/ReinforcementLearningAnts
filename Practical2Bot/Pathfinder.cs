@@ -197,10 +197,13 @@ namespace YourBot
                         OpenSet.Add(neighbour);
                         neighbour.InOpenSet = true;//openset is a min heap, no O(1) lookup so store this in the tile
                     }
-
-                    if (neighbour.InOpenSet && succesful)
+                    else
                     {
-                        OpenSet.ChangeKey(neighbour, neighbour.CostEstimate);
+
+                        if (neighbour.InOpenSet && succesful)
+                        {
+                            OpenSet.ChangeKey(neighbour, neighbour.CostEstimate);
+                        }
                     }
                 }
             }

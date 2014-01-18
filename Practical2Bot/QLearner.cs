@@ -13,39 +13,50 @@ namespace YourBot
         public float Gamma, Alpha, ExplorationChance;
         private Pair<QAction, QNode> PreviousAction;
         private QNode PreviousNode;
-        private Dictionary<QState, QNode> Nodes;
+        private Dictionary<int, QNode> Nodes;
         private Random Random;
+        private int Seed;
 
         //exploration moet tussen 1 en 0
         public QLearner(float alpha, float gamma, float exploration, int seed)
         {
-            Nodes = new Dictionary<QState, QNode>();
+            Nodes = new Dictionary<int, QNode>();
             Gamma = gamma;
             Alpha = alpha;
             ExplorationChance = exploration;
             Random = new Random(seed);
+            Seed = seed;
         }
 
-        public void LearnPolicy(GameState realState)
+        public void LearnPolicy(GameState realState, bool win)
         {
             QState state = new QState(realState);
+            int hashCode = state.GetHashCode();
 
             //TO DO: hashcode van QState implementeren
-            if (Nodes.ContainsKey(state))
+            if (Nodes.ContainsKey(hashCode))
             {
                 HandleExistingNode(state, realState);
             }
             else
             {
-                QNode newNode = InitialiseNewNode(state, realState);
-                Nodes.Add(state, newNode);
+                QNode newNode = InitialiseNewNode(state, realState, win);
+                Nodes.Add(state.GetHashCode(), newNode);
                 HandleExistingNode(state, realState);
             }
         }
 
+        //zorgt ervoor dat bij de volgende run alles weer klaar staat voor de eerste state
+        public void PrepareForSerialisation()
+        {
+            PreviousAction = null;
+            PreviousNode = null;
+            Random = new Random(Seed);//zodat random gedrag niet afhangt van hoeveel runs er gedaan zijn
+        }
+
         private void HandleExistingNode(QState state, GameState realState)
         {
-            QNode current = Nodes[state];
+            QNode current = Nodes[state.GetHashCode()];
 
             if (PreviousAction != null && PreviousNode!= null && PreviousAction.Item2 == null)
             {
@@ -56,7 +67,7 @@ namespace YourBot
 
             if (Random.NextDouble() < ExplorationChance)
             {
-                Pair<QAction, QNode> chosenAction = actions[Random.Next(0, 4)];
+                Pair<QAction, QNode> chosenAction = actions[Random.Next(0, actions.Count)];
 
                 if (chosenAction.Item2 != null)
                 {
@@ -78,7 +89,7 @@ namespace YourBot
             PreviousNode = current;
         }
 
-        private QNode InitialiseNewNode(QState state, GameState realState)
+        private QNode InitialiseNewNode(QState state, GameState realState, bool win)
         {
             //to do, actions aan node toevoegen
             List<Pair<QAction, QNode>> actions = new List<Pair<QAction, QNode>>();
@@ -96,7 +107,7 @@ namespace YourBot
             }
 
 
-            QNode newNode = new QNode(state, actions);
+            QNode newNode = new QNode(state, actions, win);
 
             return newNode;
         }
@@ -110,17 +121,23 @@ namespace YourBot
     {
         public QState State { get; private set; }
         public List<Pair<QAction, QNode>> Actions { get; private set; }
+        public bool Win;
 
         //Q(s,a) s is de QState, de lijst bevat de actions (a) gekoppeld aan de QNode waar de action je heen brengt
-        public QNode(QState state, List<Pair<QAction, QNode>> actions)
+        public QNode(QState state, List<Pair<QAction, QNode>> actions, bool win)
         {
             State = state;
             Actions = actions;
+            Win = win;
         }
 
         public float GetReward
         {
-            get { return State.GetReward; }
+            get { if (!Win) 
+                    return State.GetReward; 
+                  else 
+                    return int.MaxValue; 
+            }//misschien wat extreem;
         }
 
         public float MaxQValue()

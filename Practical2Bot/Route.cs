@@ -6,6 +6,7 @@ using Ants;
 
 namespace YourBot
 {
+    [Serializable()]
     public class Route : IComparable<Route>
     {
         private Location start;

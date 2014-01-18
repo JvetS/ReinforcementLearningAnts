@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace Ants {
-
+    [Serializable()]
 	public class Location : IEquatable<Location> {
 
 		/// <summary>
