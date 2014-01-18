@@ -44,7 +44,7 @@ namespace YourBot
                 {
                     AntData ant = antHeap.ExtractMin();
 
-                    if (ant.AntRole != Role.Gather)
+					if (ant.AntRole == Role.Explore)
                     {
                         ant.AntRole = Role.Gather;
                         ant.AntRoute = Globals.pathFinder.FindRoute(ant.CurrentLocation, food);

@@ -82,6 +82,7 @@
     <Compile Include="Route.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="InfluenceMap.cs" />
+    <Compile Include="Actions\Attack.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VERSION" />

@@ -20,6 +20,21 @@ namespace Ants
 
         public override void DoTurn(GameState state)
         {
+			foreach (Location enm in state.EnemyAnts)
+				Globals.enemyInfluence.AddInfluence(enm, 10.0f);
+
+			foreach (Location fnd in state.EnemyAnts)
+				Globals.enemyInfluence.AddInfluence(enm, 10.0f);
+
+			foreach (Location fnd in state.MyAnts)
+				Globals.friendlyInfluence.AddInfluence(fnd, 10.0f);
+
+			foreach (Location fnd in state.MyHills)
+				Globals.friendlyInfluence.AddInfluence(fnd, 10.0f);
+
+			Globals.enemyInfluence.UpdateInfluence();
+			Globals.friendlyInfluence.UpdateInfluence();
+
             try
             {
                 Learner.LearnPolicy(state);
@@ -43,6 +58,7 @@ namespace Ants
             Globals.state = state;
             Globals.random = new Random(state.PlayerSeed);
             Globals.pathFinder = new Pathfinder(state.Width, state.Height);
+			Globals.influenceMap = new InfluenceMap(state.map);
 
             try
             {

@@ -11,5 +11,7 @@ namespace Ants
         public static GameState state;
         public static Random random;
         public static Pathfinder pathFinder;
+		public static InfluenceMap enemyInfluence;
+		public static InfluenceMap friendlyInfluence;
     }
 }
