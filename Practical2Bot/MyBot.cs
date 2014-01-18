@@ -48,7 +48,6 @@ namespace Ants
 
         public override void LastTurn(GameState state, bool won)
         {
-            //TO DO laatse beurt afhandelen
             Learner.LearnPolicy(state, won);
             Learner.PrepareForSerialisation();
             BinaryFormatter formatter = new BinaryFormatter();

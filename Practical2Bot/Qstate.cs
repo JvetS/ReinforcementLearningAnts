@@ -11,7 +11,7 @@ namespace YourBot
     {
         List<Location> MyAnts;
         List<Location> Food, EnemyAnts;
-        int visibleTiles, visitedTiles, Reward;
+        int visibleTiles, visitedTiles, Reward, HashCode;
 
         public QState(GameState state)
         {
@@ -33,20 +33,25 @@ namespace YourBot
 
 		public override int GetHashCode()
 		{
-			StringBuilder sb = new StringBuilder();
-			foreach (Location l in MyAnts)
-				sb.AppendFormat("{0}", l.GetHashCode());
+            if (HashCode != 0)//beetje tijd besparen
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (Location l in MyAnts)
+                    sb.AppendFormat("{0}", l.GetHashCode());
 
-			foreach (Location l in Food)
-				sb.AppendFormat("{0}", l.GetHashCode());
+                foreach (Location l in Food)
+                    sb.AppendFormat("{0}", l.GetHashCode());
 
-			foreach (Location l in EnemyAnts)
-				sb.AppendFormat("{0}", l.GetHashCode());
+                foreach (Location l in EnemyAnts)
+                    sb.AppendFormat("{0}", l.GetHashCode());
 
-			sb.AppendFormat("{0}", visibleTiles);
-			sb.AppendFormat("{0}", visitedTiles);
+                sb.AppendFormat("{0}", visibleTiles);
+                sb.AppendFormat("{0}", visitedTiles);
 
-			return sb.ToString().GetHashCode();
+                return sb.ToString().GetHashCode();
+            }
+            else
+                return HashCode;
 		}
 
         public List<Location> CopyList(List<Location> original)
