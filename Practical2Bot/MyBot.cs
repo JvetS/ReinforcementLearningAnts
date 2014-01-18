@@ -44,6 +44,7 @@ namespace Ants
                 BinaryFormatter formatter = new BinaryFormatter();
                 Stream learnerStream = new FileStream("QData.Q", FileMode.Open);
                 Learner = (QLearner)formatter.Deserialize(learnerStream);
+                learnerStream.Close();
             }
             catch
             {

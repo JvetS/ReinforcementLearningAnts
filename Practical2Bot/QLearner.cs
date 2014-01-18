@@ -13,14 +13,14 @@ namespace YourBot
         public float Gamma, Alpha, ExplorationChance;
         private Pair<QAction, QNode> PreviousAction;
         private QNode PreviousNode;
-        private Dictionary<QState, QNode> Nodes;
+        private Dictionary<int, QNode> Nodes;
         private Random Random;
         private int Seed;
 
         //exploration moet tussen 1 en 0
         public QLearner(float alpha, float gamma, float exploration, int seed)
         {
-            Nodes = new Dictionary<QState, QNode>();
+            Nodes = new Dictionary<int, QNode>();
             Gamma = gamma;
             Alpha = alpha;
             ExplorationChance = exploration;
@@ -31,16 +31,17 @@ namespace YourBot
         public void LearnPolicy(GameState realState, bool win)
         {
             QState state = new QState(realState);
+            int hashCode = state.GetHashCode();
 
             //TO DO: hashcode van QState implementeren
-            if (Nodes.ContainsKey(state))
+            if (Nodes.ContainsKey(hashCode))
             {
                 HandleExistingNode(state, realState);
             }
             else
             {
                 QNode newNode = InitialiseNewNode(state, realState, win);
-                Nodes.Add(state, newNode);
+                Nodes.Add(state.GetHashCode(), newNode);
                 HandleExistingNode(state, realState);
             }
         }
@@ -55,7 +56,7 @@ namespace YourBot
 
         private void HandleExistingNode(QState state, GameState realState)
         {
-            QNode current = Nodes[state];
+            QNode current = Nodes[state.GetHashCode()];
 
             if (PreviousAction != null && PreviousNode!= null && PreviousAction.Item2 == null)
             {
