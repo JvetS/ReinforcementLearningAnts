@@ -60,7 +60,8 @@ namespace Ants
             Globals.state = state;
             Globals.random = new Random(state.PlayerSeed);
             Globals.pathFinder = new Pathfinder(state.Width, state.Height);
-			Globals.influenceMap = new InfluenceMap(state.map);
+			Globals.enemyInfluence = new InfluenceMap(state.map);
+			Globals.friendlyInfluence = new InfluenceMap(state.map);
 
             try
             {
