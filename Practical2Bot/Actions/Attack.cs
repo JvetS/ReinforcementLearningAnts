@@ -26,7 +26,14 @@ namespace YourBot
 				Location cur = ant.CurrentLocation;
 				if (ant.AntRole == Role.Explore && Globals.friendlyInfluence[cur.Row, cur.Col] > Globals.enemyInfluence[cur.Row, cur.Col])
 				{
-					Location next = cur.Neighbors.Max(l => Globals.enemyInfluence[l.Row, l.Col]);
+					Location next = cur.Neighbors[0];
+					float max =  Globals.enemyInfluence[next.Row, next.Col];
+					foreach (Location l in cur.Neighbors)
+						if (Globals.enemyInfluence[l.Row, l.Col] > max)
+						{
+							max = Globals.enemyInfluence[l.Row, l.Col];
+							next = l;
+						}
 
 					ant.AntRole = Role.Attack;
 					ant.AntRoute = new Route(cur, next, new Location[] { cur, next });
