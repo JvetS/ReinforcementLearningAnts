@@ -77,7 +77,7 @@ namespace Ants
         public static void Main(string[] args)
         {
 #if DEBUG
-            Debugger.Launch();
+                Debugger.Launch();
 #endif
             new Ants().PlayGame(new MyBot());
         }
