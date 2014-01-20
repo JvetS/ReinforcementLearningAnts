@@ -33,7 +33,7 @@ namespace YourBot
 
 		public override int GetHashCode()
 		{
-            if (HashCode != 0)//beetje tijd besparen
+            if (HashCode == 0)//beetje tijd besparen
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (Location l in MyAnts)
@@ -48,7 +48,9 @@ namespace YourBot
                 sb.AppendFormat("{0}", visibleTiles);
                 sb.AppendFormat("{0}", visitedTiles);
 
-                return sb.ToString().GetHashCode();
+                int code = sb.ToString().GetHashCode();
+                HashCode = code;
+                return code;
             }
             else
                 return HashCode;
