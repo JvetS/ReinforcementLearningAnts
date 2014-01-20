@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ants;
+using System.IO;
 
 namespace YourBot
 {
@@ -16,6 +17,7 @@ namespace YourBot
         private Dictionary<int, QNode> Nodes;
         private Random Random;
         private int Seed;
+        private int Recognised, New;
 
         //exploration moet tussen 1 en 0
         public QLearner(float alpha, float gamma, float exploration, int seed)
@@ -28,15 +30,19 @@ namespace YourBot
             Seed = seed;
         }
 
-        public void LearnPolicy(GameState realState, bool win)
+        public void ExecutePolicy(GameState realState, bool win)
         {
             QState state = new QState(realState);
             int hashCode = state.GetHashCode();
 
-            //TO DO: hashcode van QState implementeren
             if (Nodes.ContainsKey(hashCode))
             {
-                HandleExistingNode(state, realState);
+                QNode current = Nodes[hashCode];
+
+                Pair<QAction, QNode> chosenAction = current.BestAction();
+                chosenAction.Item1.DoAction(realState, current.State);
+                PreviousAction = chosenAction;
+                PreviousNode = current;
             }
             else
             {
@@ -46,11 +52,39 @@ namespace YourBot
             }
         }
 
+        public void LearnPolicy(GameState realState, bool win)
+        {
+            QState state = new QState(realState);
+            int hashCode = state.GetHashCode();
+
+            //TO DO: hashcode van QState implementeren
+            if (Nodes.ContainsKey(hashCode))
+            {
+                HandleExistingNode(state, realState);
+                Recognised++;
+            }
+            else
+            {
+                QNode newNode = InitialiseNewNode(state, realState, win);
+                Nodes.Add(state.GetHashCode(), newNode);
+                HandleExistingNode(state, realState);
+                New++;
+            }
+        }
+
         //zorgt ervoor dat bij de volgende run alles weer klaar staat voor de eerste state
         public void PrepareForSerialisation()
         {
             PreviousAction = null;
             PreviousNode = null;
+
+            StreamWriter writer = new StreamWriter("Qlog2.txt", true);
+            writer.WriteLine("recognised {0}, new {1}",Recognised,New);
+            writer.Flush();
+            writer.Close();
+
+            Recognised = 0;
+            New = 0;
             Random = new Random(Seed);//zodat random gedrag niet afhangt van hoeveel runs er gedaan zijn
         }
 
@@ -61,6 +95,11 @@ namespace YourBot
             if (PreviousAction != null && PreviousNode!= null && PreviousAction.Item2 == null)
             {
                 PreviousAction.Item2 = current;
+
+                float maxQ = current.MaxQValue();
+                float reward = current.GetReward - PreviousNode.GetReward;
+
+                PreviousAction.Item1.QValue = (1 - Alpha) * PreviousAction.Item1.QValue + Alpha * (reward + maxQ);
             }
 
             List<Pair<QAction, QNode>> actions = current.Actions;
@@ -112,7 +151,19 @@ namespace YourBot
             return newNode;
         }
 
+        public void PrintData()
+        {
+            StreamWriter writer = new StreamWriter("Qlog.txt");
 
+            foreach (QNode node in Nodes.Values)
+            {
+                writer.WriteLine(node.PrintData());
+                writer.WriteLine(" ");
+            }
+
+            writer.Flush();
+            writer.Close();
+        }
     }
 
     //deze classe vult de rol van één vak in de grid met alle pijlen naar andere states (zie slide 30 van reinforcement learning)
@@ -166,6 +217,17 @@ namespace YourBot
             }
 
             return maxAction;
+        }
+
+        public string PrintData()
+        {
+            string result = "";
+            foreach(Pair<QAction,QNode> pair in Actions)
+            {
+                result += pair.Item1.ID + " " + pair.Item1.QValue + "\n";
+            }
+
+            return result;
         }
     }
 
