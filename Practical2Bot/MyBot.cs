@@ -35,8 +35,13 @@ namespace Ants
 			Globals.enemyInfluence.UpdateInfluence();
 			Globals.friendlyInfluence.UpdateInfluence();
 
-          
+#if DEBUG
             Learner.LearnPolicy(state, false);
+#endif
+
+#if RELEASE
+            Learner.ExecutePolicy(state,false);
+#endif
         }
 
         public override void LastTurn(GameState state, bool won)
@@ -72,7 +77,7 @@ namespace Ants
         public static void Main(string[] args)
         {
 #if DEBUG
-            Debugger.Launch();
+                Debugger.Launch();
 #endif
             new Ants().PlayGame(new MyBot());
         }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace YourBot
 {
+    [Serializable()]
 	public class Attack : QAction
     {
 		public Attack() : base("attack", 0)

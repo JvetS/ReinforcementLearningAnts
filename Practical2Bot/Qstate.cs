@@ -106,7 +106,6 @@ namespace YourBot
             result += expectedAntGain * 10;
 
             Reward = result;
-
         }
 
         public int GetReward
