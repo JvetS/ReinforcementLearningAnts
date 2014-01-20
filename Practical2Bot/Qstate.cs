@@ -33,10 +33,10 @@ namespace YourBot
 
 		public override int GetHashCode()
 		{
-            if (HashCode != 0)//beetje tijd besparen
+            if (HashCode == 0)//beetje tijd besparen
             {
                 StringBuilder sb = new StringBuilder();
-                foreach (Location l in MyAnts)
+                foreach (Location l in MyAnts.OrderBy(l => l.GetHashCode()))
                     sb.AppendFormat("{0}", l.GetHashCode());
 
                 foreach (Location l in Food)
@@ -48,7 +48,7 @@ namespace YourBot
                 sb.AppendFormat("{0}", visibleTiles);
                 sb.AppendFormat("{0}", visitedTiles);
 
-                return sb.ToString().GetHashCode();
+                return (HashCode = sb.ToString().GetHashCode());
             }
             else
                 return HashCode;
