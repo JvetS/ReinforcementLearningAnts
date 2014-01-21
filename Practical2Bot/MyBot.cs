@@ -43,9 +43,10 @@ namespace Ants
 #endif
 
 #if RELEASE
-            Learner.ExecutePolicy(state,false);
+            Learner.LearnPolicy(state, false);
+            //Learner.ExecutePolicy(state,false);
 #endif
-        }
+        }   
 
         public override void LastTurn(GameState state, bool won)
         {
