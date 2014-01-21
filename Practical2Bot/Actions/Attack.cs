@@ -18,9 +18,9 @@ namespace YourBot
 			return state.MyAnts.Any(l => Globals.friendlyInfluence[l.Row, l.Col] > Globals.enemyInfluence[l.Row, l.Col]);
 		}
 
-		public override void DoAction(GameState state, QState qstate)
+		public override void DoAction(GameState state, int hashcode)
 		{
-			base.DoAction(state, qstate);
+			base.DoAction(state, hashcode);
 
 			foreach (AntData ant in allAnts)
 			{

@@ -22,9 +22,9 @@ namespace YourBot
         /// move an equal amount of ants to each food tile
         /// </summary>
         /// <param name="state"></param>
-        public override void DoAction(GameState state, QState qstate)
+        public override void DoAction(GameState state, int hashcode)
         {
-            base.DoAction(state, qstate);
+            base.DoAction(state, hashcode);
 
             int foodCount = state.FoodTiles.Count;
             int ants = allAnts.Count;

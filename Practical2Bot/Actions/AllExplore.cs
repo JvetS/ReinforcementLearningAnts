@@ -18,12 +18,12 @@ namespace YourBot
             return true;
         }
 
-        public override void DoAction(GameState state, QState qstate)
+        public override void DoAction(GameState state, int hashcode)
         {
-            base.DoAction(state, qstate);
+            base.DoAction(state, hashcode);
 
             //to guarantee the same actions regardless of the particular run
-            Random random = new Random(qstate.GetHashCode());
+            Random random = new Random(hashcode);
 
             foreach (AntData ant in allAnts)
             {

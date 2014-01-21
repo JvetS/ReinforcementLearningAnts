@@ -39,13 +39,15 @@ namespace Ants
 			Globals.friendlyInfluence.UpdateInfluence();
 
 #if DEBUG
-            Learner.LearnPolicy(state, false);
+            //Learner.LearnPolicy(state, false);
+            Learner.ExecutePolicy(state, false);
 #endif
 
 #if RELEASE
             Learner.LearnPolicy(state, false);
             //Learner.ExecutePolicy(state,false);
 #endif
+            int i = 0;
         }   
 
         public override void LastTurn(GameState state, bool won)
@@ -80,8 +82,8 @@ namespace Ants
 
         public static void Main(string[] args)
         {
-#if DEBUGGER
-                Debugger.Launch();
+#if DEBUG
+           Debugger.Launch();
 #endif
             new Ants().PlayGame(new MyBot());
         }

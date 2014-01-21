@@ -40,7 +40,7 @@ namespace YourBot
                 QNode current = Nodes[hashCode];
 
                 Pair<QAction, QNode> chosenAction = current.BestAction();
-                chosenAction.Item1.DoAction(realState, current.State);
+                chosenAction.Item1.DoAction(realState, current.GetHashCode());
                 PreviousAction = chosenAction;
                 PreviousNode = current;
             }
@@ -115,13 +115,13 @@ namespace YourBot
                     chosenAction.Item1.QValue = (1 - Alpha) * chosenAction.Item1.QValue + Alpha * (reward + maxQ);//Q(s,a) = (1-a) * Q(s,a) + a(r+g max[Q(s', a')]
                 }
 
-                chosenAction.Item1.DoAction(realState, current.State);
+                chosenAction.Item1.DoAction(realState, current.GetHashCode());
                 PreviousAction = chosenAction;
             }
             else
             {
                 Pair<QAction, QNode> chosenAction = current.BestAction();
-                chosenAction.Item1.DoAction(realState, current.State);
+                chosenAction.Item1.DoAction(realState, current.GetHashCode());
                 PreviousAction = chosenAction;
             }
 
@@ -150,7 +150,7 @@ namespace YourBot
             {
                 actions.Add(new Pair<QAction, QNode>(attackAction, null));
             }
-
+            
             QNode newNode = new QNode(state, actions, win);
 
             return newNode;
@@ -175,14 +175,16 @@ namespace YourBot
     [Serializable()]
     class QNode
     {
-        public QState State { get; private set; }
+        public float Reward { get; private set; }
+        public int HashCode;
         public List<Pair<QAction, QNode>> Actions { get; private set; }
         public bool Win;
 
         //Q(s,a) s is de QState, de lijst bevat de actions (a) gekoppeld aan de QNode waar de action je heen brengt
         public QNode(QState state, List<Pair<QAction, QNode>> actions, bool win)
         {
-            State = state;
+            HashCode = state.GetHashCode();
+            Reward = state.GetReward;
             Actions = actions;
             Win = win;
         }
@@ -190,10 +192,15 @@ namespace YourBot
         public float GetReward
         {
             get { if (!Win) 
-                    return State.GetReward; 
+                    return Reward; 
                   else 
                     return int.MaxValue; 
             }//misschien wat extreem;
+        }
+
+        public int GetHashCode
+        {
+            get { return HashCode; }
         }
 
         public float MaxQValue()

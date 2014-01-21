@@ -45,7 +45,7 @@ namespace YourBot
                     return MoveType.Fail;
             }
 
-            return MoveType.Fail;
+                return MoveType.Fail;
         }
 
         /// <summary>
@@ -73,8 +73,11 @@ namespace YourBot
             }
         }
 
-        public virtual void DoAction(GameState state, QState qstate)
+        public virtual void DoAction(GameState state, int hashcode)
         {
+            orders.Clear();
+            allAnts.Clear();
+            antLocations.Clear();
             CreatAntData(state);
         }
 
