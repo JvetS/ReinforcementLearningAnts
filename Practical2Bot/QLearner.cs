@@ -145,6 +145,12 @@ namespace YourBot
                 actions.Add(new Pair<QAction, QNode>(exploreAction, null));
             }
 
+            QAction attackAction = new Attack();
+            if (attackAction.Apllicable(realState))
+            {
+                actions.Add(new Pair<QAction, QNode>(attackAction, null));
+            }
+
             QNode newNode = new QNode(state, actions, win);
 
             return newNode;

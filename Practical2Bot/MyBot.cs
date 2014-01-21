@@ -32,6 +32,9 @@ namespace Ants
 			foreach (Location fnd in state.MyHills)
 				Globals.friendlyInfluence.AddInfluence(fnd, 10.0f);
 
+            foreach (Location ded in state.DeadTiles)
+                Globals.friendlyInfluence.AddInfluence(ded, 5.0f);
+
 			Globals.enemyInfluence.UpdateInfluence();
 			Globals.friendlyInfluence.UpdateInfluence();
 
@@ -76,8 +79,8 @@ namespace Ants
 
         public static void Main(string[] args)
         {
-#if DEBUG
-            Debugger.Launch();
+#if DEBUGGER
+                Debugger.Launch();
 #endif
             new Ants().PlayGame(new MyBot());
         }

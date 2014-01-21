@@ -36,7 +36,7 @@ namespace YourBot
             if (HashCode == 0)//beetje tijd besparen
             {
                 StringBuilder sb = new StringBuilder();
-                foreach (Location l in MyAnts)
+                foreach (Location l in MyAnts.OrderBy(l => l.GetHashCode()))
                     sb.AppendFormat("{0}", l.GetHashCode());
 
                 foreach (Location l in Food)
@@ -48,9 +48,7 @@ namespace YourBot
                 sb.AppendFormat("{0}", visibleTiles);
                 sb.AppendFormat("{0}", visitedTiles);
 
-                int code = sb.ToString().GetHashCode();
-                HashCode = code;
-                return code;
+                return (HashCode = sb.ToString().GetHashCode());
             }
             else
                 return HashCode;
