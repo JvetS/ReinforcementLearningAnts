@@ -85,6 +85,7 @@ namespace Ants
 #if DEBUG
            Debugger.Launch();
 #endif
+
             new Ants().PlayGame(new MyBot());
         }
     }

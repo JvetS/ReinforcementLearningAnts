@@ -45,10 +45,13 @@ namespace YourBot
                 {
                     AntData ant = antHeap.ExtractMin();
 
-                    ant.AntRole = Role.Gather;
-                    ant.AntRoute = Globals.pathFinder.FindRoute(ant.CurrentLocation, food);
-                    ant.AdvancePath(this);
-                    assignedAnts++;
+                    if (ant.AntRole != Role.Gather)
+                    {
+                        ant.AntRole = Role.Gather;
+                        ant.AntRoute = Globals.pathFinder.FindRoute(ant.CurrentLocation, food);
+                        ant.AdvancePath(this);
+                        assignedAnts++;
+                    }
                 }
             }
         }
