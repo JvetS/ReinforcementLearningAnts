@@ -40,15 +40,11 @@ namespace Ants
 
 #if DEBUG
             
-            Learner.LearnPolicy(state, false);
-            //Learner.ExecutePolicy(state, false);
-            
-           
+            Learner.LearnPolicy(state, false);         
 #endif
 
 #if RELEASE
-            Learner.LearnPolicy(state, false);
-            //Learner.ExecutePolicy(state,false);
+            Learner.ExecutePolicy(state,false);
 #endif
         }   
 
@@ -87,7 +83,7 @@ namespace Ants
         public static void Main(string[] args)
         {
 #if DEBUG
-           //Debugger.Launch();
+           Debugger.Launch();
 #endif
             new Ants().PlayGame(new MyBot());
         }
