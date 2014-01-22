@@ -29,7 +29,7 @@ namespace YourBot
 				{
 					Location next = cur.Neighbors[0];
 					float max =  Globals.enemyInfluence[next.Row, next.Col];
-					foreach (Location l in cur.Neighbors)
+                    foreach (Location l in cur.Neighbors.Where(ll => ll.Value != Tile.Ant && ll.Value != Tile.Water))
 						if (Globals.enemyInfluence[l.Row, l.Col] > max)
 						{
 							max = Globals.enemyInfluence[l.Row, l.Col];
