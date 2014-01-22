@@ -39,19 +39,21 @@ namespace Ants
 			Globals.friendlyInfluence.UpdateInfluence();
 
 #if DEBUG
-            //Learner.LearnPolicy(state, false);
-            Learner.ExecutePolicy(state, false);
+            
+            Learner.LearnPolicy(state, false);
+            //Learner.ExecutePolicy(state, false);
+            
+           
 #endif
 
 #if RELEASE
             Learner.LearnPolicy(state, false);
             //Learner.ExecutePolicy(state,false);
 #endif
-            int i = 0;
         }   
 
         public override void LastTurn(GameState state, bool won)
-        {
+        {  
             Learner.LearnPolicy(state, won);
             Learner.PrepareForSerialisation();
             BinaryFormatter formatter = new BinaryFormatter();
@@ -73,6 +75,8 @@ namespace Ants
                 Stream learnerStream = new FileStream("QData.Q", FileMode.Open);
                 Learner = (QLearner)formatter.Deserialize(learnerStream);
                 learnerStream.Close();
+
+                Learner.GamesPlayed++;
             }
             catch
             {
@@ -83,7 +87,7 @@ namespace Ants
         public static void Main(string[] args)
         {
 #if DEBUG
-           Debugger.Launch();
+           //Debugger.Launch();
 #endif
             new Ants().PlayGame(new MyBot());
         }

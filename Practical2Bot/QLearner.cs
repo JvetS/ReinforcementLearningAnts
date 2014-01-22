@@ -18,6 +18,7 @@ namespace YourBot
         private Random Random;
         private int Seed;
         private int Recognised, New;
+        public int GamesPlayed;
 
         //exploration moet tussen 1 en 0
         public QLearner(float alpha, float gamma, float exploration, int seed)
@@ -236,7 +237,7 @@ namespace YourBot
             string result = "";
             foreach(Pair<QAction,QNode> pair in Actions)
             {
-                result += pair.Item1.ID + " " + pair.Item1.QValue + "\n";
+                result += pair.Item1.ID + " " + pair.Item1.QValue + " " + "\n";
             }
 
             return result;

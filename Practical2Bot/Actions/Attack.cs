@@ -25,7 +25,7 @@ namespace YourBot
 			foreach (AntData ant in allAnts)
 			{
 				Location cur = ant.CurrentLocation;
-				if (ant.AntRole == Role.Explore && Globals.friendlyInfluence[cur.Row, cur.Col] > Globals.enemyInfluence[cur.Row, cur.Col])
+				if (Globals.friendlyInfluence[cur.Row, cur.Col] > Globals.enemyInfluence[cur.Row, cur.Col])
 				{
 					Location next = cur.Neighbors[0];
 					float max =  Globals.enemyInfluence[next.Row, next.Col];
