@@ -205,9 +205,9 @@ namespace YourBot
             }//misschien wat extreem;
         }
 
-        public int GetHashCode
+        public override int GetHashCode()
         {
-            get { return HashCode; }
+            return HashCode;
         }
 
         public float MaxQValue()

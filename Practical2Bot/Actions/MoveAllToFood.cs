@@ -26,33 +26,19 @@ namespace YourBot
         {
             base.DoAction(state, hashcode);
 
-            int foodCount = state.FoodTiles.Count;
-            int ants = allAnts.Count;
-            int antPerFood = foodCount / ants;
-
-            foreach (Location food in state.FoodTiles)
+            foreach (AntData ant in allAnts)
             {
-                AnonymousMinHeap<AntData> antHeap = new AnonymousMinHeap<AntData>();
-
-                foreach(AntData ant in allAnts)
-                {
-                    antHeap.Add(ant, state.GetDistance(ant.CurrentLocation,food));
-                }
-
-                int assignedAnts = 0;
-
-                while (assignedAnts < antPerFood && antHeap.Count > 0)
-                {
-                    AntData ant = antHeap.ExtractMin();
-
-                    if (ant.AntRole != Role.Gather)
+                Location next = ant.CurrentLocation.Neighbors[0];
+                float max = Globals.foodInfluence[next.Row, next.Col];
+                foreach (Location l in ant.CurrentLocation.Neighbors)
+                    if (Globals.foodInfluence[l.Row, l.Col] > max && Globals.state.GetIsUnoccupied(l) && Globals.state.GetIsPassable(l))
                     {
-                        ant.AntRole = Role.Gather;
-                        ant.AntRoute = Globals.pathFinder.FindRoute(ant.CurrentLocation, food);
-                        ant.AdvancePath(this);
-                        assignedAnts++;
+                        max = Globals.foodInfluence[l.Row, l.Col];
+                        next = l;
                     }
-                }
+
+                ant.AntRoute = new Route(ant.CurrentLocation, next, new Location[] { ant.CurrentLocation, next });
+                ant.AdvancePath(this);
             }
         }
     }

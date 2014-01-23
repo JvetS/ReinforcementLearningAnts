@@ -33,13 +33,14 @@ namespace YourBot
             	Location next = ant.CurrentLocation.Neighbors[0];
 				float max =  Globals.hillInfluence[next.Row, next.Col];
                 foreach (Location l in ant.CurrentLocation.Neighbors)
-                    if (Globals.state.GetIsUnoccupied(l) && Globals.state.GetIsPassable(l))
+                    if (Globals.hillInfluence[l.Row, l.Col] > max && Globals.state.GetIsUnoccupied(l) && Globals.state.GetIsPassable(l))
 					{
 						max = Globals.hillInfluence[l.Row, l.Col];
 						next = l;
 					}
 
                 ant.AntRoute = new Route(ant.CurrentLocation, next, new Location[] { ant.CurrentLocation, next });
+                ant.AdvancePath(this);
             }
         }
     }

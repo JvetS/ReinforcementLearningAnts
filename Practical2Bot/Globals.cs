@@ -14,5 +14,6 @@ namespace Ants
 		public static InfluenceMap enemyInfluence;
 		public static InfluenceMap friendlyInfluence;
         public static InfluenceMap hillInfluence;
+        public static InfluenceMap foodInfluence;
     }
 }

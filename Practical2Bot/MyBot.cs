@@ -38,9 +38,13 @@ namespace Ants
             foreach (Location ded in state.DeadTiles)
                 Globals.friendlyInfluence.AddInfluence(ded, 10.0f);
 
+            foreach (Location loc in state.FoodTiles)
+                Globals.foodInfluence.AddInfluence(loc, 10.0f);
+
 			Globals.enemyInfluence.UpdateInfluence(5);
 			Globals.friendlyInfluence.UpdateInfluence(5);
             Globals.hillInfluence.UpdateInfluence(5);
+            Globals.foodInfluence.UpdateInfluence(5);
 
 #if DEBUG
             
@@ -69,6 +73,7 @@ namespace Ants
 			Globals.enemyInfluence = new InfluenceMap(state.map);
 			Globals.friendlyInfluence = new InfluenceMap(state.map);
             Globals.hillInfluence = new InfluenceMap(state.map);
+            Globals.foodInfluence = new InfluenceMap(state.map);
 
             try
             {
