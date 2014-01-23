@@ -13,5 +13,6 @@ namespace Ants
         public static Pathfinder pathFinder;
 		public static InfluenceMap enemyInfluence;
 		public static InfluenceMap friendlyInfluence;
+        public static InfluenceMap hillInfluence;
     }
 }

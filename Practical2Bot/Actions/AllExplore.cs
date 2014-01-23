@@ -27,14 +27,9 @@ namespace YourBot
 
             foreach (AntData ant in allAnts)
             {
-                do
-                {
-                    Location lowerLeft = new Location(Globals.state.Height - 1, 0);
-                    Location upperRight = new Location(0, Globals.state.Width - 1);
-                    Location goal = SelectRandomLocation(lowerLeft, upperRight, random);
+                Location goal = SelectRandomNeighbor(ant.CurrentLocation, random);
 
-                    ant.AntRoute = Globals.pathFinder.FindRoute(ant.CurrentLocation, goal);
-                } while (ant.AntRoute == null);
+                ant.AntRoute = new Route(ant.CurrentLocation, goal, new Location[] { ant.CurrentLocation, goal });
 
                 ant.AdvancePath(this);
             }
@@ -47,6 +42,15 @@ namespace YourBot
             {
                 goal = new Location(random.Next(upperRight.Row, lowerLeft.Row), random.Next(lowerLeft.Col, upperRight.Col));
             } while (goal == null && !Globals.state.MyHills.Contains(goal) && Globals.state.GetIsPassable(goal));
+
+            return goal;
+        }
+
+        public Location SelectRandomNeighbor(Location loc, Random random)
+        {
+            Location goal = null;
+            while (!Globals.state.GetIsPassable((goal = loc.Neighbors[random.Next(4)])) && Globals.state.MyHills.Contains(goal) && !Globals.state.GetIsUnoccupied(goal))
+                continue;
 
             return goal;
         }

@@ -15,7 +15,13 @@ namespace YourBot
 
 		public override bool Apllicable(GameState state)
 		{
-			return state.MyAnts.Any(l => Globals.friendlyInfluence[l.Row, l.Col] > Globals.enemyInfluence[l.Row, l.Col]);
+            foreach (Location loc in state.MyAnts)
+            {
+                if (Globals.friendlyInfluence[loc.Row, loc.Col] >= Globals.enemyInfluence[loc.Row, loc.Col])
+                    return true;
+            }
+            return false;
+			//return state.MyAnts.Any(l => Globals.friendlyInfluence[l.Row, l.Col] > Globals.enemyInfluence[l.Row, l.Col]);
 		}
 
 		public override void DoAction(GameState state, int hashcode)
@@ -24,22 +30,17 @@ namespace YourBot
 
 			foreach (AntData ant in allAnts)
 			{
-				Location cur = ant.CurrentLocation;
-				if (Globals.friendlyInfluence[cur.Row, cur.Col] > Globals.enemyInfluence[cur.Row, cur.Col])
-				{
-					Location next = cur.Neighbors[0];
-					float max =  Globals.enemyInfluence[next.Row, next.Col];
-                    foreach (Location l in cur.Neighbors.Where(ll => ll.Value != Tile.Ant && ll.Value != Tile.Water))
-						if (Globals.enemyInfluence[l.Row, l.Col] > max)
-						{
-							max = Globals.enemyInfluence[l.Row, l.Col];
-							next = l;
-						}
+                Location next = ant.CurrentLocation.Neighbors[0];
+				float max =  Globals.enemyInfluence[next.Row, next.Col];
+                foreach (Location l in ant.CurrentLocation.Neighbors)
+                    if (Globals.enemyInfluence[l.Row, l.Col] > max && Globals.state.GetIsUnoccupied(l) && Globals.state.GetIsPassable(l))
+					{
+						max = Globals.enemyInfluence[l.Row, l.Col];
+						next = l;
+					}
 
-					ant.AntRole = Role.Attack;
-					ant.AntRoute = new Route(cur, next, new Location[] { cur, next });
-					ant.AdvancePath(this);
-				}
+                ant.AntRoute = new Route(ant.CurrentLocation, next, new Location[] { ant.CurrentLocation, next });
+				ant.AdvancePath(this);
 			}
 		}
     }

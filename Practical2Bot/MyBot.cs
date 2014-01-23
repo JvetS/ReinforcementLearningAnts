@@ -23,20 +23,24 @@ namespace Ants
 			foreach (Location enm in state.EnemyAnts)
 				Globals.enemyInfluence.AddInfluence(enm, 10.0f);
 
-			foreach (Location enm in state.EnemyHills)
-				Globals.enemyInfluence.AddInfluence(enm, 10.0f);
+            foreach (Location enm in state.EnemyHills)
+            {
+                Globals.enemyInfluence.AddInfluence(enm, 1.0f);
+                Globals.hillInfluence.AddInfluence(enm, 15.0f);
+            }
 
 			foreach (Location fnd in state.MyAnts)
 				Globals.friendlyInfluence.AddInfluence(fnd, 10.0f);
 
 			foreach (Location fnd in state.MyHills)
-				Globals.friendlyInfluence.AddInfluence(fnd, 10.0f);
+				Globals.friendlyInfluence.AddInfluence(fnd, 1.0f);
 
             foreach (Location ded in state.DeadTiles)
-                Globals.friendlyInfluence.AddInfluence(ded, 5.0f);
+                Globals.friendlyInfluence.AddInfluence(ded, 10.0f);
 
-			Globals.enemyInfluence.UpdateInfluence();
-			Globals.friendlyInfluence.UpdateInfluence();
+			Globals.enemyInfluence.UpdateInfluence(5);
+			Globals.friendlyInfluence.UpdateInfluence(5);
+            Globals.hillInfluence.UpdateInfluence(5);
 
 #if DEBUG
             
@@ -64,6 +68,7 @@ namespace Ants
             Globals.pathFinder = new Pathfinder(state.Width, state.Height);
 			Globals.enemyInfluence = new InfluenceMap(state.map);
 			Globals.friendlyInfluence = new InfluenceMap(state.map);
+            Globals.hillInfluence = new InfluenceMap(state.map);
 
             try
             {

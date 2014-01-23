@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\AllExplore.cs" />
+    <Compile Include="Actions\AnyRaze.cs" />
     <Compile Include="AntData.cs" />
     <Compile Include="Ants.cs" />
     <Compile Include="Bot.cs" />
