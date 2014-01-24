@@ -7,7 +7,7 @@ using System.IO;
 
 namespace YourBot
 {
-    //deze klasse kan q waarden updaten en een policy uitvoeren
+    //this class implements the q learning algorithm
     [Serializable()]
     class QLearner
     {
@@ -20,7 +20,7 @@ namespace YourBot
         private int Recognised, New;
         public int GamesPlayed;
 
-        //exploration moet tussen 1 en 0
+        //exploration must be between 1 and 0
         public QLearner(float alpha, float gamma, float exploration, int seed)
         {
             Nodes = new Dictionary<int, QNode>();
@@ -31,21 +31,22 @@ namespace YourBot
             Seed = seed;
         }
 
+        //used to play non learning games
         public void ExecutePolicy(GameState realState, bool win)
         {
             QState state = new QState(realState);
             int hashCode = state.GetHashCode();
 
-            if (Nodes.ContainsKey(hashCode))
+            if (Nodes.ContainsKey(hashCode))//known state, in principle every state you encounter should be known
             {
                 QNode current = Nodes[hashCode];
 
-                Pair<QAction, QNode> chosenAction = current.BestAction();
-                chosenAction.Item1.DoAction(realState, current.GetHashCode());
+                Pair<QAction, QNode> chosenAction = current.BestAction();//action with highest q value
+                chosenAction.Item1.DoAction(realState, current.GetHashCode());//make ants move
                 PreviousAction = chosenAction;
                 PreviousNode = current;
             }
-            else
+            else//if your policy takes you outside known state space you have not trained enough. turn this into a learning step
             {
                 QNode newNode = InitialiseNewNode(state, realState, win);
                 Nodes.Add(state.GetHashCode(), newNode);
@@ -53,18 +54,19 @@ namespace YourBot
             }
         }
 
+        //used in training games
         public void LearnPolicy(GameState realState, bool win)
         {
             QState state = new QState(realState);
             int hashCode = state.GetHashCode();
 
-            //TO DO: hashcode van QState implementeren
+            //known state space
             if (Nodes.ContainsKey(hashCode))
             {
                 HandleExistingNode(state, realState);
                 Recognised++;
             }
-            else
+            else//encountering a new state
             {
                 QNode newNode = InitialiseNewNode(state, realState, win);
                 Nodes.Add(state.GetHashCode(), newNode);
@@ -73,7 +75,7 @@ namespace YourBot
             }
         }
 
-        //zorgt ervoor dat bij de volgende run alles weer klaar staat voor de eerste state
+        //makes sure the learner is reday for a fresh game
         public void PrepareForSerialisation()
         {
             PreviousAction = null;
@@ -86,40 +88,41 @@ namespace YourBot
 
             Recognised = 0;
             New = 0;
-            Random = new Random(Seed);//zodat random gedrag niet afhangt van hoeveel runs er gedaan zijn
+            //Random = new Random(Seed);//make sure random behaviour is not run dependent
         }
 
+        //the main learning method
         private void HandleExistingNode(QState state, GameState realState)
         {
-            QNode current = Nodes[state.GetHashCode()];
+            QNode current = Nodes[state.GetHashCode()];//q node that represents current game state
 
-            if (PreviousAction != null && PreviousNode!= null && PreviousAction.Item2 == null)
+            if (PreviousAction != null && PreviousNode!= null && PreviousAction.Item2 == null)//we have come from a known state we have visited before to a state we are visiting for the first time.
             {
                 PreviousAction.Item2 = current;
 
                 float maxQ = current.MaxQValue();
                 float reward = current.GetReward - PreviousNode.GetReward;
 
-                PreviousAction.Item1.QValue = (1 - Alpha) * PreviousAction.Item1.QValue + Alpha * (reward + maxQ);
+                PreviousAction.Item1.QValue = (1 - Alpha) * PreviousAction.Item1.QValue + Alpha * (reward + maxQ);//update q value backwards, since the normal update in the previous turn failed
             }
 
             List<Pair<QAction, QNode>> actions = current.Actions;
 
-            if (Random.NextDouble() < ExplorationChance)
+            if (Random.NextDouble() < ExplorationChance)//chosse a random action
             {
                 Pair<QAction, QNode> chosenAction = actions[Random.Next(0, actions.Count)];
 
-                if (chosenAction.Item2 != null)
+                if (chosenAction.Item2 != null)//update q value only if already known the next state
                 {
                     float maxQ = chosenAction.Item2.MaxQValue();
                     float reward = chosenAction.Item2.GetReward - state.GetReward;
-                    chosenAction.Item1.QValue = (1 - Alpha) * chosenAction.Item1.QValue + Alpha * (reward + maxQ);//Q(s,a) = (1-a) * Q(s,a) + a(r+g max[Q(s', a')]
+                    chosenAction.Item1.QValue = (1 - Alpha) * chosenAction.Item1.QValue + Alpha * (reward + maxQ);//Q(s,a) = (1-a) * Q(s,a) + a(r+g max[Q(s', a')] normal q value update
                 }
 
                 chosenAction.Item1.DoAction(realState, current.GetHashCode());
                 PreviousAction = chosenAction;
             }
-            else
+            else//do not explore, choose knwown good action
             {
                 Pair<QAction, QNode> chosenAction = current.BestAction();
                 chosenAction.Item1.DoAction(realState, current.GetHashCode());
@@ -129,9 +132,10 @@ namespace YourBot
             PreviousNode = current;
         }
 
+        //used when ecnountering a state for the first time
         private QNode InitialiseNewNode(QState state, GameState realState, bool win)
         {
-            //to do, actions aan node toevoegen
+            //add applicable actions to node
             List<Pair<QAction, QNode>> actions = new List<Pair<QAction, QNode>>();
 
             QAction foodAction = new MoveAllToFood();
@@ -163,6 +167,7 @@ namespace YourBot
             return newNode;
         }
 
+        //debuging method, prints actions and q values
         public void PrintData()
         {
             StreamWriter writer = new StreamWriter("Qlog.txt");
@@ -178,7 +183,7 @@ namespace YourBot
         }
     }
 
-    //deze classe vult de rol van één vak in de grid met alle pijlen naar andere states (zie slide 30 van reinforcement learning)
+    //this class is a single state in the q state space and all its possible transitions to other states
     [Serializable()]
     class QNode
     {
@@ -202,7 +207,7 @@ namespace YourBot
                     return Reward; 
                   else 
                     return int.MaxValue; 
-            }//misschien wat extreem;
+            }
         }
 
         public override int GetHashCode()
@@ -238,6 +243,7 @@ namespace YourBot
             return maxAction;
         }
 
+        //debugging method
         public string PrintData()
         {
             string result = "";
@@ -250,6 +256,7 @@ namespace YourBot
         }
     }
 
+    //made because you cant change an item in a normal Tuple
     [Serializable()]
     class Pair<T, Y>
     {

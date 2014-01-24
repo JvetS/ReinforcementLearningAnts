@@ -79,7 +79,7 @@ namespace Ants
             string backupFile = Globals.QLearnerFolder + "\\" + "Qbackup.Q";
             string originalFile = Globals.QLearnerFolder + "\\" + "QData.Q";
 
-            if(File.Exists(originalFile))
+            if(File.Exists(originalFile))//previously run, there is learning data
             {
 
                 BinaryFormatter formatter = new BinaryFormatter();
@@ -104,7 +104,7 @@ namespace Ants
             }
             else
             {
-                Learner = new QLearner(0.9f, 0.8f, 0.9f, state.PlayerSeed);
+                Learner = new QLearner(0.9f, 0.8f, 0.9f, state.PlayerSeed);//very first game, no learning done previously
             }
         }
 
@@ -113,7 +113,7 @@ namespace Ants
             bool contains = false;
             string current = Directory.GetCurrentDirectory();
             string parent = Directory.GetParent(current).FullName;
-            while (!contains)
+            while (!contains)//go up the file tree until you reach a folder that contains the QLearners folder
             {
                 current = parent;
                 parent = Directory.GetParent(current).FullName;

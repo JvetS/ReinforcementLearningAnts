@@ -7,7 +7,7 @@ using Ants;
 namespace YourBot
 {
     [Serializable()]
-    public abstract class QAction
+    public abstract class QAction//this class provides all basic methods to move ants around the field, action classes use these methods to construct behaviour. 
     {
         public string ID { get; private set;}
         public float QValue;
@@ -60,6 +60,7 @@ namespace YourBot
             return doMoveDirection(ant, new List<Direction>(direction)[0]);
         }
 
+
         protected void CreatAntData(GameState state)
         {
             foreach (Location loc in state.MyAnts)
@@ -73,8 +74,10 @@ namespace YourBot
             }
         }
 
+        //turn locations into antData objects for compatibility with reused methods from previous practical
         public virtual void DoAction(GameState state, int hashcode)
         {
+            //actions are serialised at the end, make sure to start fresh by clearing all the ant related data
             orders.Clear();
             allAnts.Clear();
             antLocations.Clear();

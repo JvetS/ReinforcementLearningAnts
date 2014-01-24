@@ -6,6 +6,7 @@ using Ants;
 
 namespace YourBot
 {
+    //this class maps every real game state to a hash code and calculates the state's desirability
     [Serializable()]
     public class QState
     {
@@ -33,7 +34,7 @@ namespace YourBot
 
 		public override int GetHashCode()
 		{
-            if (HashCode == 0)//beetje tijd besparen
+            if (HashCode == 0)//save alittle time
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (Location l in MyAnts)
@@ -54,6 +55,7 @@ namespace YourBot
                 return HashCode;
 		}
 
+        //method written when the qstates were stored and serialised with the q learner. is not strictly necessary anymore
         public List<Location> CopyList(List<Location> original)
         {
             List<Location> result = new List<Location>(original.Count);
@@ -76,7 +78,7 @@ namespace YourBot
             float foodClaimed = 0f;
             float longestDistanceToFood = 0f;
 
-            foreach (Location food in Food)
+            foreach (Location food in Food)//calculates how many food bits we can gather, and how far the furthest one is
             {
                 if (foodClaimed >= MyAnts.Count)
                     break;

@@ -53,26 +53,6 @@ namespace YourBot
 		{
 			for (int i = 0; i < times; ++i)
 				UpdateInfluence();
-			/*float[,] updatedInfluence = new float[map.GetLength(0), map.GetLength(1)];
-			foreach (Location loc in map)
-			{
-				float max = loc.Neighbors.SelectMany( (l, i) =>
-					{
-
-						Location[] locs = new Location[spread];
-						Location ll = l;
-						for (int j = 0; j < spread; ++j)
-						{
-							locs[j] = ll;
-							ll = ll.Neighbors[i];
-						}
-						return locs;
-					}
-				).Max(x => influence[x.Row, x.Col] * Decay);
-
-				updatedInfluence[loc.Row, loc.Col] = m1 * influence[loc.Row, loc.Col] + m0 * max;
-			}
-			influence = updatedInfluence;*/
 		}
 	}
 }
