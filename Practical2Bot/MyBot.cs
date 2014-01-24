@@ -41,10 +41,10 @@ namespace Ants
             foreach (Location loc in state.FoodTiles)
                 Globals.foodInfluence.AddInfluence(loc, 10.0f);
 
-			Globals.enemyInfluence.UpdateInfluence(5);
-			Globals.friendlyInfluence.UpdateInfluence(5);
-            Globals.hillInfluence.UpdateInfluence(5);
-            Globals.foodInfluence.UpdateInfluence(5);
+			Globals.enemyInfluence.UpdateInfluence();
+			Globals.friendlyInfluence.UpdateInfluence();
+            Globals.hillInfluence.UpdateInfluence();
+            Globals.foodInfluence.UpdateInfluence();
 
 #if DEBUG
             
