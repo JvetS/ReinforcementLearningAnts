@@ -15,5 +15,6 @@ namespace Ants
 		public static InfluenceMap friendlyInfluence;
         public static InfluenceMap hillInfluence;
         public static InfluenceMap foodInfluence;
+        public static string QLearnerFolder;
     }
 }
