@@ -76,21 +76,29 @@ namespace Ants
             Globals.hillInfluence = new InfluenceMap(state.map);
             Globals.foodInfluence = new InfluenceMap(state.map);
 
-            try
+            string backupFile = Globals.QLearnerFolder + "\\" + "Qbackup.Q";
+            string originalFile = Globals.QLearnerFolder + "\\" + "QData.Q";
+
+            if(File.Exists(originalFile))
             {
-                string backupFile = Globals.QLearnerFolder + "\\" + "Qbackup.Q";
-                string originalFile = Globals.QLearnerFolder + "\\" + "QData.Q";
 
                 BinaryFormatter formatter = new BinaryFormatter();
                 Stream learnerStream = new FileStream(originalFile, FileMode.Open);
                 Learner = (QLearner)formatter.Deserialize(learnerStream);
                 learnerStream.Close();
 
-                System.IO.File.Copy(originalFile, backupFile, true);//in case of deserialisation error, your progress is not lost
+                if (File.Exists(backupFile))
+                {
+                    FileInfo originalInfo = new FileInfo(originalFile);
+                    FileInfo backupInfo = new FileInfo(backupFile);
+
+                    if(originalInfo.Length > backupInfo.Length)//the more the bots learn the bigger this should get, if it is suddenly smaller there has been a serialisation error, do not backup
+                        System.IO.File.Copy(originalFile, backupFile, true);//in case of deserialisation error, your progress is not lost
+                }
 
                 Learner.GamesPlayed++;
             }
-            catch
+            else
             {
                 Learner = new QLearner(0.9f, 0.8f, 0.9f, state.PlayerSeed);
             }
@@ -116,9 +124,8 @@ namespace Ants
         public static void Main(string[] args)
         {
 #if DEBUG
-           Debugger.Launch();
+           //Debugger.Launch();
 #endif
-
             new Ants().PlayGame(new MyBot());
         }
     }
