@@ -36,7 +36,7 @@ namespace Ants
 				Globals.friendlyInfluence.AddInfluence(fnd, 1.0f);
 
             foreach (Location ded in state.DeadTiles)
-                Globals.friendlyInfluence.AddInfluence(ded, 10.0f);
+                Globals.enemyInfluence.AddInfluence(ded, 10.0f);
 
             foreach (Location loc in state.FoodTiles)
                 Globals.foodInfluence.AddInfluence(loc, 10.0f);

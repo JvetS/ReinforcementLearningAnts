@@ -15,13 +15,7 @@ namespace YourBot
 
 		public override bool Apllicable(GameState state)
 		{
-            foreach (Location loc in state.MyAnts)
-            {
-                if (Globals.friendlyInfluence[loc.Row, loc.Col] >= Globals.enemyInfluence[loc.Row, loc.Col])
-                    return true;
-            }
-            return false;
-			//return state.MyAnts.Any(l => Globals.friendlyInfluence[l.Row, l.Col] > Globals.enemyInfluence[l.Row, l.Col]);
+            return state.MyAnts.Count > state.EnemyAnts.Count;
 		}
 
 		public override void DoAction(GameState state, int hashcode)
