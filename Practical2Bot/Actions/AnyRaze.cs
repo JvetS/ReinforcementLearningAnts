@@ -24,12 +24,18 @@ namespace YourBot
             return false;
         }
 
+        /// <summary>
+        /// Make ants home in and raze a hill.
+        /// </summary>
+        /// <param name="state"></param>
         public override void DoAction(Ants.GameState state, int hashcode)
         {
             base.DoAction(state, hashcode);
 
+            // Make all ants move towards the closest enemy hill.
             foreach (AntData ant in allAnts)
             {
+                // Move towards the unoccupied/passable tile closest to the hill.
             	Location next = ant.CurrentLocation.Neighbors[0];
 				float max =  Globals.hillInfluence[next.Row, next.Col];
                 foreach (Location l in ant.CurrentLocation.Neighbors)
@@ -38,7 +44,7 @@ namespace YourBot
 						max = Globals.hillInfluence[l.Row, l.Col];
 						next = l;
 					}
-
+                // Perform move.
                 ant.AntRoute = new Route(ant.CurrentLocation, next, new Location[] { ant.CurrentLocation, next });
                 ant.AdvancePath(this);
             }

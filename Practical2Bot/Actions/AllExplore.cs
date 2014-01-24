@@ -18,6 +18,10 @@ namespace YourBot
             return true;
         }
 
+        /// <summary>
+        /// Ants took a page out of Google's book, "I'm feeling lucky".
+        /// </summary>
+        /// <param name="state"></param>
         public override void DoAction(GameState state, int hashcode)
         {
             base.DoAction(state, hashcode);
@@ -49,6 +53,9 @@ namespace YourBot
         public Location SelectRandomNeighbor(Location loc, Random random)
         {
             Location goal = null;
+            // Our locations store their neighbors, making it easy to select a random direction with wrapping behavior.
+            // We make sure not to move towards our own hills and make sure the tile is unoccupied.
+            // This is a simplified version of our previous exploration strategy, which would plan a path towards a random location.
             while (!Globals.state.GetIsPassable((goal = loc.Neighbors[random.Next(4)])) && Globals.state.MyHills.Contains(goal) && !Globals.state.GetIsUnoccupied(goal))
                 continue;
 
