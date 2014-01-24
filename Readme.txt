@@ -19,6 +19,10 @@ Using some of our QData files can be done the same way as above.
 
 We have included the play_one_game.cmd file we use to let our bot play, this one will open a browser.
 
+NOTE
+Our serialised Qlearner can get very large, over 60mb on bots trained on larger maps. You need to allow for a generous end wait and load time to make sure serialistaion and deserialisation can finish.
+5 seconds is enough for the larger maps, while 2 seconds works on the smaller maps.
+
 Debugging:
 we have commented out the debugger.launch line in MyBot.cs line 131. you can uncomment it if you want.
 
