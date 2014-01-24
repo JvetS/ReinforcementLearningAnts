@@ -92,8 +92,12 @@ namespace Ants
                     FileInfo originalInfo = new FileInfo(originalFile);
                     FileInfo backupInfo = new FileInfo(backupFile);
 
-                    if(originalInfo.Length > backupInfo.Length)//the more the bots learn the bigger this should get, if it is suddenly smaller there has been a serialisation error, do not backup
+                    if (originalInfo.Length > backupInfo.Length)//the more the bots learn the bigger this should get, if it is suddenly smaller there has been a serialisation error, do not backup
                         System.IO.File.Copy(originalFile, backupFile, true);//in case of deserialisation error, your progress is not lost
+                }
+                else
+                {
+                    System.IO.File.Copy(originalFile, backupFile, true);//in case of deserialisation error, your progress is not lost
                 }
 
                 Learner.GamesPlayed++;
