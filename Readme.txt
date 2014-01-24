@@ -10,18 +10,21 @@ The bot will also look for QBackup.Q in the same folder. Before a game starts it
 
 We will include some QData files we made, just change the name from QData<map>.Q to QData.Q and run it on the specified map.
 
-We have included our own play_many_games.cmd (paths may not be right for you) which we used to train, it will automatically run a specified amount of games. Look for the --rounds option. 
+We have included our own play_many_games.cmd (paths may not be right for you, make sure to get our exe from the debug folder) which we used to train, it will automatically run a specified amount of games. Look for the --rounds option. 
 this cmd file will not open a browser.
 
 How to let the bot play a real game
 Build the bot in release mode to have it execute the learned policy. It will also look for the QData.Q and QBackup.Q files in the QLearner folder. 
 Using some of our QData files can be done the same way as above.
 
-We have included the play_one_game.cmd file we use to let our bot play, this one will open a browser.
+We have included the play_one_game.cmd (get our exe from the release folder in this one) file we use to let our bot play, this one will open a browser.
 
-NOTE
+NOTE:
 Our serialised Qlearner can get very large, over 60mb on bots trained on larger maps. You need to allow for a generous end wait and load time to make sure serialistaion and deserialisation can finish.
 5 seconds is enough for the larger maps, while 2 seconds works on the smaller maps.
+
+NOTE2:
+all the .cmd files we included need to be run from the tools folder. which came wih the python framework.
 
 Debugging:
 we have commented out the debugger.launch line in MyBot.cs line 131. you can uncomment it if you want.
