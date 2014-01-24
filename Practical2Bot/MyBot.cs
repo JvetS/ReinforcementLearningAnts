@@ -61,13 +61,14 @@ namespace Ants
             Learner.LearnPolicy(state, won);
             Learner.PrepareForSerialisation();
             BinaryFormatter formatter = new BinaryFormatter();
-            Stream learnerStream = new FileStream("QData.Q", FileMode.OpenOrCreate);
+            Stream learnerStream = new FileStream(Globals.QLearnerFolder + "\\" + "QData.Q", FileMode.OpenOrCreate);
             formatter.Serialize(learnerStream, Learner);
         }
 
         public override void Initialise(GameState state)
         {
             Globals.state = state;
+            Globals.QLearnerFolder = FindQLearnerFolder();
             Globals.random = new Random(state.PlayerSeed);
             Globals.pathFinder = new Pathfinder(state.Width, state.Height);
 			Globals.enemyInfluence = new InfluenceMap(state.map);
@@ -77,10 +78,15 @@ namespace Ants
 
             try
             {
+                string backupFile = Globals.QLearnerFolder + "\\" + "Qbackup.Q";
+                string originalFile = Globals.QLearnerFolder + "\\" + "QData.Q";
+
                 BinaryFormatter formatter = new BinaryFormatter();
-                Stream learnerStream = new FileStream("QData.Q", FileMode.Open);
+                Stream learnerStream = new FileStream(originalFile, FileMode.Open);
                 Learner = (QLearner)formatter.Deserialize(learnerStream);
                 learnerStream.Close();
+
+                System.IO.File.Copy(originalFile, backupFile, true);//in case of deserialisation error, your progress is not lost
 
                 Learner.GamesPlayed++;
             }
@@ -88,6 +94,23 @@ namespace Ants
             {
                 Learner = new QLearner(0.9f, 0.8f, 0.9f, state.PlayerSeed);
             }
+        }
+
+        public static string FindQLearnerFolder()
+        {
+            bool contains = false;
+            string current = Directory.GetCurrentDirectory();
+            string parent = Directory.GetParent(current).FullName;
+            while (!contains)
+            {
+                current = parent;
+                parent = Directory.GetParent(current).FullName;
+                string[] test = Directory.GetDirectories(parent);
+
+                contains = test.Contains<string>(parent + "\\QLearners");
+            }
+
+            return parent + "\\QLearners";
         }
 
         public static void Main(string[] args)
